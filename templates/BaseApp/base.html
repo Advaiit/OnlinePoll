@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <title>{% block title_block %} Poll App - Home {% endblock %}</title>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light nav-fill">
+      <a class="navbar-brand" href="{% url 'base_app:Home' %}">Open Poll</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'base_app:Home' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'base_app:poll_search' %}">Search Polls</a>
+          </li>
+          <li>
+            {% if user.is_authenticated %}
+            <a class="nav-link" href="{% url 'base_app:add_poll' %}">Add Poll</a>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'base_app:user_logout' %}">Logout</a>
+            </li>
+            {% else %}
+              <button type="button" class="nav-item btn btn-outline-success" data-toggle="modal" data-target="#loginModal" name="button">LogIn</button>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="modal" data-target="#signupModal" href="#">SignUp</a>
+              </li>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Login</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form method="POST" action="{% url 'base_app:user_login' %}"> <!-- TODO: check of django Form will work here -->
+            {% csrf_token %}
+            <div class="form-group">
+              <input type="text" placeholder="username" class="form-control" name="username">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="password" class="form-control" name="password">
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Login</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="container">
+          <p>Dont have an account? <button class="btn btn-link" data-dismiss="modal" data-toggle="modal" data-target="#signupModal">SignUp here!</button></p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SignUp Modal -->
+  <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="signupModalLabel">SignUp</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" enctype="multipart/form-data" action="{% url 'base_app:user_register' %}"> <!-- TODO: check of django Form will work here -->
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="profile_pic">Profile Pic</label>
+              <input type="file" name="profile_pic" class="form-control-file">
+            </div>
+            <div class="form-group">
+              <input type="text" placeholder="Username" class="form-control" name="username">
+            </div>
+            <div class="form-group">
+              <input type="email" placeholder="Email" class="form-control" name="email">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" class="form-control" name="password">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Confirm Password" class="form-control" name="confirm-password">
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success user_buttons">SignUp</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="jumbotron">
+    <h1>{{ list_title }}</h1>
+  </div>
+
+
+    {% block left_block %}
+    </div>
+    <div class="profile_info container">
+      <table>
+        {%if user.user_profile.profile_pic %}
+          <tr><td> <img src="{{ MEDIA_URL }}{{ user.user_profile.profile_pic }}" height="100" width="100" alt="Avatar" style="border-radius:50%"> <br><br> </td></tr>
+        {% endif %}
+        <tr><td>{{ user.username }}</td></tr>
+        <tr><td>Points: {{ user.user_profile.user_points }}</td></tr>
+        <tr><td>Followers: {Follower Count}</td></tr>
+        <tr><td>Following: {Following Count}</td></tr>
+        {% if user.is_authenticated %}
+        <tr><td><a href="{% url 'base_app:poll_list' %}">My Polls</a></td></tr> <!-- TODO: Add poll page for this -->
+        {% endif %}
+      </table>
+    </div>
+
+    {% endblock %}
+
+    {% block main_list_block %}
+
+    {% block search_block %} {% endblock %}
+
+      <div class="main_list container">
+        <table>
+
+          {% for q in question_list %}
+            <tr>
+              <table>
+                <tr> <td> <a href="{% url 'base_app:poll' q.id %}"> <h3> {{q.question_text}} </h3> </a> </td></tr>
+                <tr> <td> {{q.question_comments}} </td></tr>
+              </table>
+              <br>
+              <br>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+    {% endblock %}
+
+    {% block topic_block %}
+      <div class=" container topic_list">
+        <table>
+          {% for q in question_list %}
+            <tr> <td><h3> <a href="{% url 'base_app:poll_list' q.question_topic %}"> {{ q.question_topic }}</a></h3></td></tr>
+          {% endfor %}
+          <!-- <tr> <td><td><h3>TOPIC 1</h3></td> <td>Some details about topic 1</td> </td></tr>
+          <tr> <td><td><h3>TOPIC 2</h3></td> <td>Some details about topic 2</td> </td></tr>
+          <tr> <td><td><h3>TOPIC 3</h3></td> <td>Some details about topic 3</td> </td></tr>
+          <tr> <td><td><h3>TOPIC 4</h3></td> <td>Some details about topic 4</td> </td></tr>
+          <tr> <td><td><h3>TOPIC 5</h3></td> <td>Some details about topic 5</td> </td> </tr> -->
+        </table>
+      </div>
+    {% endblock %}
+
+  </body>
+</html>

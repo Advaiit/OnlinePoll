@@ -1,0 +1,29 @@
+{% extends 'BaseApp/base.html' %}
+
+{% block main_list_block %}
+  {% if user.is_authenticated %}
+    <div class="main_list container">
+
+      <form class="form-group" action="{% url 'base_app:add_poll' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" placeholder="Type your question here" name="question_text" class="form-control">
+        <br><br>
+
+        <!-- TODO: Add buttons for dynamic inputs -->
+        <input type="text" placeholder="Type option 1" name="option1" class="form-control"><br>
+        <input type="text" placeholder="Type option 2" name="option2" class="form-control"><br>
+        <input type="text" placeholder="Type option 3" name="option3" class="form-control"><br>
+        <input type="text" placeholder="Type option 4" name="option4" class="form-control"><br>
+        <br>
+
+        <input type="text" name="question_topic" default="Misc" placeholder="Question Topic" class="form-control"><br>
+        <input type="text" name="question_comments" default="---" placeholder="Question Comment" class="form-control"><br>
+
+        <button type="submit" name="button" class="btn btn-success">Lets Do It</button>
+      </form>
+    </div>
+
+  {% endif %}
+{% endblock %}
+
+{% block topic_block %} {% endblock %}

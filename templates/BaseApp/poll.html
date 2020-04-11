@@ -1,0 +1,24 @@
+{% extends 'BaseApp/base.html' %}
+
+{% block main_list_block %}
+
+  <div class="main_list container">
+    <h3> {{ question.question_text }} </h3>
+    <br>
+    <form method="POST">
+      {% csrf_token %}
+      {% for option in optionList %}
+        <input type="radio" name="option" value="{{option.id}}">
+        <label for="{{ option.option_text }}">{{ option.option_text }}</label>
+        <br>
+      {% endfor %}
+      <br>
+      {% if disableDone %}
+      <button type="submit" class="btn btn-lg btn-block btn-outline-success user_buttons" value="Submit" disabled>Done</button>
+      {% else %}
+      <!-- TODO: Display the dialog to login here -->
+      <button type="submit" class="btn btn-lg btn-block btn-outline-success user_buttons" value="Submit">Done</button>
+      {% endif %}
+    </form>
+  </div>
+  {% endblock %}
